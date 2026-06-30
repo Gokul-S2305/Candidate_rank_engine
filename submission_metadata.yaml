@@ -1,0 +1,46 @@
+# Submission Metadata — Redrob India Runs Data & AI Challenge
+# Fill in your team details before submitting
+
+team:
+  name: "YOUR_TEAM_NAME"
+  members:
+    - name: "YOUR_NAME"
+      email: "your@email.com"
+      github: "https://github.com/YOUR_USERNAME"
+
+submission:
+  version: 2
+  submission_file: "outputs/submission.csv"
+  sandbox_url: "https://YOUR_STREAMLIT_APP.streamlit.app"
+  repository_url: "https://github.com/YOUR_USERNAME/candidate-ranking-engine"
+
+system:
+  approach: "Talent DNA — 8-dimension candidate representation with skill verification and confidence scoring"
+  compute: "CPU only, no GPU"
+  runtime_seconds: 30
+  memory_mb: 500
+  external_apis: false
+  llm_calls_during_ranking: false
+
+scoring_weights:
+  dna_composite: 0.35
+  verified_skill_alignment: 0.25
+  years_of_experience: 0.14
+  behavioral_signals: 0.13
+  availability: 0.08
+  professional_dna: 0.03
+  profile_completeness: 0.02
+
+engines:
+  - talent_dna.py       # 8-dimension DNA vector per candidate
+  - skill_truth.py      # Skill verification against 5 evidence sources
+  - confidence.py       # Per-recommendation confidence scoring
+  - honeypot.py         # Hard honeypot detection + soft anomaly layer
+  - scorer.py           # Integrates all engines into final score
+  - reasoning.py        # Evidence-backed per-candidate reasoning
+  - jd_intelligence.py  # JD-derived constants (single source of truth)
+
+reproduce:
+  command: "python rank.py --candidates ./candidates.jsonl --out ./outputs/submission.csv"
+  python_version: "3.9+"
+  install: "pip install -r requirements.txt"

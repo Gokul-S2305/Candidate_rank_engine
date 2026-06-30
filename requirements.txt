@@ -1,0 +1,17 @@
+# Redrob Candidate Ranking Engine
+# All dependencies run on CPU, no GPU required
+# No external LLM API calls made during ranking
+
+# Core runtime (no heavy ML frameworks needed - pure rule-based scoring)
+# Python stdlib: json, csv, datetime, pathlib, argparse, time, sys
+
+# Sandbox / demo UI
+streamlit>=1.32.0,<2.0.0
+pandas>=2.0.0,<3.0.0
+python-docx>=1.1.0
+
+# Validation
+# (validate_submission.py uses stdlib only - no extra deps)
+
+# Optional: faster JSON parsing for very large files
+# ujson>=5.0.0  # uncomment if needed, stdlib json is sufficient for 5min budget
