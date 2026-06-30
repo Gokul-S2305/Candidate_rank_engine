@@ -1,46 +1,87 @@
 # Submission Metadata — Redrob India Runs Data & AI Challenge
 # Fill in your team details before submitting
 
-team:
-  name: "YOUR_TEAM_NAME"
-  members:
-    - name: "YOUR_NAME"
-      email: "your@email.com"
-      github: "https://github.com/YOUR_USERNAME"
+# ============================================================================
+# Team identity
+# ============================================================================
+team_name: "Visioneers"  # Used in leaderboard and announcements
 
-submission:
-  version: 2
-  submission_file: "outputs/submission.csv"
-  sandbox_url: "https://YOUR_STREAMLIT_APP.streamlit.app"
-  repository_url: "https://github.com/YOUR_USERNAME/candidate-ranking-engine"
+primary_contact:
+  name: "Gokul S"
+  email: "gokul.sakunthala@gmail.com"   
+  phone: "+91-90929 24061"        
 
-system:
-  approach: "Talent DNA — 8-dimension candidate representation with skill verification and confidence scoring"
-  compute: "CPU only, no GPU"
-  runtime_seconds: 30
-  memory_mb: 500
-  external_apis: false
-  llm_calls_during_ranking: false
+team_members:
+  - name: "Rubiha J"
+    email: "rubiha1412@gmail.com"
+    role: "Project Lead & Ranking Engine Developer"         
+  - name: "Gokul S"
+    email: "gokul.sakunthala@gmail.com"
+    role: "Resume Intelligence & Data Engineer"
+  - name: "Sathya Moorthy R"
+    email: "sathyamoorthyr306@gmail.com"
+    role: "ML Scoring & Candidate Evaluation"         
+  - name: "Joshna Shine R"
+    email: "joshnashiner@gmail.com"
+    role: "Frontend & Visualization Developer"
 
-scoring_weights:
-  dna_composite: 0.35
-  verified_skill_alignment: 0.25
-  years_of_experience: 0.14
-  behavioral_signals: 0.13
-  availability: 0.08
-  professional_dna: 0.03
-  profile_completeness: 0.02
+# ============================================================================
+# Code and reproducibility
+# ============================================================================
+github_repo: "https://github.com/Gokul-S2305/Candidate_rank_engine"
+# Required. Must be reachable. Private repos OK if you can grant organizer
+# access at Stage 3 (the email to add will be communicated then).
 
-engines:
-  - talent_dna.py       # 8-dimension DNA vector per candidate
-  - skill_truth.py      # Skill verification against 5 evidence sources
-  - confidence.py       # Per-recommendation confidence scoring
-  - honeypot.py         # Hard honeypot detection + soft anomaly layer
-  - scorer.py           # Integrates all engines into final score
-  - reasoning.py        # Evidence-backed per-candidate reasoning
-  - jd_intelligence.py  # JD-derived constants (single source of truth)
+sandbox_link: "https://huggingface.co/spaces/YOUR_USERNAME/redrob-ranker"
+# Required. A working hosted environment where the ranker can be run on a small
+# candidate sample. See Section 10.5 of submission_spec.md for acceptable
+# platforms (HuggingFace Spaces, Streamlit Cloud, Replit, Colab, Docker, Binder).
 
-reproduce:
-  command: "python rank.py --candidates ./candidates.jsonl --out ./outputs/submission.csv"
-  python_version: "3.9+"
-  install: "pip install -r requirements.txt"
+reproduce_command: "python rank.py --candidates ./candidates.jsonl --out ./submission.csv"
+# The single command that produces submission.csv from candidates.jsonl.
+# Should run end-to-end within 5 minutes on CPU with 16GB RAM and no network.
+
+# ============================================================================
+# Compute environment
+# ============================================================================
+compute:
+  platform: "MacBook Pro M2"                    # Or: "AWS EC2 c5.4xlarge", "Local Linux box", etc.
+  cpu_cores: 8                                  # Number of CPU cores used
+  ram_gb: 16                                    # Available RAM in GB
+  python_version: "3.11.4"                      # python --version
+  os: "macOS 14.2"                              # Or "Ubuntu 22.04 LTS", etc.
+  uses_gpu_for_inference: false                 # Must be false — see compute constraints
+  has_network_during_ranking: false             # Must be false — no API calls during ranking
+  pre_computation_required: false               # true if you pre-compute embeddings or train models offline
+  pre_computation_time_minutes: 0               # Approximate, if applicable
+
+# ============================================================================
+# AI tools declaration
+# ============================================================================
+# Transparency only — declared use is NOT penalized. Be honest. Stage 5 interview
+# may verify these declarations against your code; declarations that contradict
+# your code or your interview are flagged.
+ai_tools_used:
+  - "ChatGPT"
+  - "Claude"
+
+ai_usage_summary: |
+  -"Used ChatGPT for debugging and implementation support."
+  -"Used Claude for architecture discussion and code review."
+  -"No candidate data was shared with any LLM."
+
+# ============================================================================
+# Approach summary (optional but recommended)
+# ============================================================================
+methodology_summary: |
+  "Multi-stage AI candidate ranking engine with deterministic scoring and evidence-based reasoning. Eight scoring engines evaluate each candidate across Talent DNA (technical expertise, execution, trust, professionalism, adaptability, innovation, communication, and risk), verified skill alignment, experience, behavioral signals, availability, and profile completeness. A Skill Truth Verification module cross-validates claimed skills using career history, assessments, endorsements, certifications, and proficiency consistency, reducing keyword stuffing and rewarding demonstrated expertise. A dual-layer Risk Intelligence engine combines hard disqualification rules with behavioral anomaly detection to eliminate impossible or suspicious profiles before ranking. An independent Decision Confidence engine measures the reliability of each recommendation based on signal quality and evidence consistency. Final scores are computed using a weighted scoring model with reachability and risk multipliers, producing transparent, reproducible rankings. Every recommendation includes candidate-specific reasoning generated exclusively from verified profile data, ensuring explainability without inferred skills, experience, or achievements. The complete pipeline ranks 100,000 candidates in approximately 57 seconds on a CPU, requires no external APIs or GPUs, and delivers scalable, reproducible, and enterprise-ready candidate recommendations."
+# ============================================================================
+# Declarations
+# ============================================================================
+declarations:
+  read_submission_spec: true        # I have read submission_spec.md in full
+  code_is_original_work: true       # My code is my team's original work (using AI as a tool is fine)
+  no_collusion: true                # I have not coordinated my submission with other teams
+  honeypot_check_done: true        # OPTIONAL — set true if you explicitly checked for honeypots in your ranking
+  reproduction_tested: true         # I have tested that my reproduce_command runs end-to-end
+
