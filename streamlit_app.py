@@ -27,6 +27,7 @@ st.markdown("""
     .stMetric [data-testid="stMetricValue"] { font-size: 1.4rem; font-weight: 600; }
     .candidate-card {
         background: #fafafa;
+        color: #111111;
         border: 1px solid #eee;
         border-radius: 10px;
         padding: 18px 22px;
@@ -338,7 +339,7 @@ if view == "Cards":
   <span class="score-pill">{r['score']:.3f}</span>
   <span style="font-size:0.82rem;color:#888;margin-left:8px;">{avail} {r['notice']}d notice</span>
   <div style="margin-top:8px;">
-    <strong style="font-size:1rem;">{r['title']}</strong>
+    <strong style="font-size:1rem;color:#111111;">{r['title']}</strong>
     <span style="color:#666;font-size:0.9rem;"> · {r['company']}</span>
   </div>
   <div style="color:#888;font-size:0.82rem;margin-top:2px;">{r['yoe']} yrs &nbsp;·&nbsp; {r['location']}</div>
