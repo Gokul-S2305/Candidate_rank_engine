@@ -2,10 +2,6 @@
 candidates.jsonl
 sample_candidates.json
 
-# Generated outputs
-outputs/
-*.csv
-
 # Python
 __pycache__/
 *.pyc
