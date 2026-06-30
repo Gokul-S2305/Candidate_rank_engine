@@ -62,6 +62,19 @@ def score_candidate(candidate: dict) -> dict:
     title_lower = profile.get("current_title", "").lower()
     if any(bt in title_lower for bt in _BAD_TITLE_SET):
         return _disqualified(0.02, f"title '{profile.get('current_title','')}' outside domain", candidate)
+    # Junior title soft penalty
+    junior_penalty = 1.0
+
+    if any(token in title_lower for token in [
+        "junior",
+        "jr.",
+        "jr ",
+        "associate ",
+        "intern",
+        "trainee",
+        "graduate engineer"
+    ]):
+        junior_penalty = 0.80
 
     # ── 3. TEXT CORPORA ───────────────────────────────────────────────────────
     career_text    = " ".join(j.get("description", "").lower() for j in career)
@@ -120,7 +133,7 @@ def score_candidate(candidate: dict) -> dict:
     if any(city in location_lower for city in TIER_1_LOCATIONS):    loc_score = 1.0
     elif any(city in location_lower for city in TIER_2_LOCATIONS):  loc_score = 0.85
     elif country_lower == "india":  loc_score = 0.65 if relocate else 0.45
-    else:                           loc_score = 0.30 if relocate else 0.10
+    else:                           loc_score = 0.15 if relocate else 0.05
     availability_score = 0.55 * notice_score + 0.45 * loc_score
 
     # Behavioral
@@ -150,25 +163,84 @@ def score_candidate(candidate: dict) -> dict:
 
     # Skill score boosted by verification evidence
     verified_skill = skill_score * (0.7 + 0.3 * vscore)
+    # ----- Bonus signals -----
+    # # 1. Work mode preference
+    work_mode = sigs.get("preferred_work_mode", "flexible").lower()
+    work_mode_score = {
+          "onsite": 1.0,
+          "hybrid": 0.9,
+          "flexible": 0.7,
+          "remote": 0.4
+          }.get(work_mode, 0.7)
+    # 2. Response time
+    avg_resp_hrs = sigs.get("avg_response_time_hours", 48)
+
+    if avg_resp_hrs <= 12:
+        resp_time_score = 1.0
+    elif avg_resp_hrs <= 24:
+        resp_time_score = 0.85
+    elif avg_resp_hrs <= 72:
+        resp_time_score = 0.65
+    else:
+        resp_time_score = 0.35
+
+    # 3. Recruiter demand
+    search_30d = sigs.get("search_appearance_30d", 0)
+    search_score = min(search_30d / 300.0, 1.0)
+
+    # 4. Active job hunting
+    apps_30d = sigs.get("applications_submitted_30d", 0)
+    hunting_score = min(apps_30d / 10.0, 1.0)
+
+    # 5. Education tier
+    edu = candidate.get("education", [{}])
+
+    if edu:
+        tier = edu[0].get("tier", "tier_3")
+    else:
+        tier = "tier_3"
+
+    edu_score = {
+        "tier_1": 1.0,
+        "tier_2": 0.75,
+        "tier_3": 0.50
+    }.get(tier, 0.50)
+
+    bonus_score = (
+        0.30 * work_mode_score +
+        0.25 * resp_time_score +
+        0.20 * search_score +
+        0.15 * hunting_score +
+        0.10 * edu_score
+    )
+    
 
     final_score = (
-        0.35 * dna_score           +   # DNA composite (technical, execution, trust, risk...)
-        0.25 * verified_skill      +   # Skill alignment × verification
-        0.14 * yoe_score           +   # Experience band
-        0.13 * behavioral_score    +   # Redrob platform signals
-        0.08 * availability_score  +   # Notice + location
-        0.03 * dna.get("professional", 0) +  # Leadership/startup/complexity
-        0.02 * (sigs.get("profile_completeness_score", 50) / 100.0)
+    0.35 * dna_score +
+    0.25 * verified_skill +
+    0.14 * yoe_score +
+    0.10 * behavioral_score +
+    0.08 * availability_score +
+    0.03 * bonus_score +
+    0.03 * dna.get("professional", 0) +
+    0.02 * (sigs.get("profile_completeness_score", 50) / 100.0)
     )
 
     # Reachability multiplier
     if resp_rate < 0.15 and days_inactive > 150:
-        final_score *= 0.6
+           final_score *= 0.6
 
-    # Risk penalty from DNA (high risk = low risk DNA score)
+    # Risk penalty from DNA
     if dna.get("risk", 1.0) < 0.40:
-        final_score *= (0.8 + 0.2 * dna["risk"])
+           final_score *= (0.8 + 0.2 * dna["risk"])
 
+    # Score rescaling
+    # Apply junior title penalty
+    final_score *= junior_penalty
+    # Preserves ranking while increasing separation among top candidates.
+    SCORE_POWER = 0.60
+    final_score = final_score ** SCORE_POWER
+    
     final_score = round(final_score, 6)
 
     # ── 8. CONFIDENCE ────────────────────────────────────────────────────────
