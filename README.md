@@ -24,8 +24,8 @@ The Streamlit application allows recruiters to:
 # Repository Setup
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/candidate-ranking-engine
-cd candidate-ranking-engine
+git clone https://github.com/Gokul-S2305/Candidate_rank_engine
+cd Candidate_rank_engine
 pip install -r requirements.txt
 ```
 
