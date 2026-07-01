@@ -32,7 +32,7 @@ github_repo: "https://github.com/Gokul-S2305/Candidate_rank_engine"
 sandbox_link: "https://candidaterankengine.streamlit.app/" 
 # Streamlit is used
 
-reproduce_command: ""python rank.py --candidates ./candidates.jsonl --out ./outputs/submission.csv"
+reproduce_command: "python rank.py --candidates ./candidates.jsonl --out ./outputs/submission.csv"
 # The single command that produces submission.csv from candidates.jsonl.
 
 # ============================================================================
@@ -57,10 +57,10 @@ ai_tools_used:
   - "Claude"
 
 ai_usage_summary: |
-  -"Used ChatGPT for debugging and implementation support."
-  -"Used Claude for architecture discussion and code review."
-  -"No candidate data was shared with any LLM."
-
+  Used ChatGPT for debugging and implementation support.
+  Used Claude for architecture discussion and code review.
+  No candidate data was shared with any LLM.
+  
 # ============================================================================
 # Approach summary (optional but recommended)
 # ============================================================================
